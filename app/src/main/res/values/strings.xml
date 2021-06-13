@@ -156,6 +156,7 @@
     <string name="pref_key_color_primary" translatable="false">pref_key_color_primary</string>
     <string name="pref_key_color_accent" translatable="false">pref_key_color_accent</string>
     <string name="pref_key_dark_theme" translatable="false">pref_key_dark_theme</string>
+    <string name="pref_key_theme_follow_system" translatable="false">pref_key_theme_follow_system</string>
     <string name="pref_key_wrap_filenames" translatable="false">pref_key_wrap_filenames</string>
     <string name="pref_key_app_updates" translatable="false">pref_key_app_updates</string>
     <string name="pref_key_app_updates_beta" translatable="false">pref_key_app_updates_beta</string>
@@ -518,4 +519,5 @@
     <string name="pref_bugreport_start_summary">Tap to start data collection, then try to reproduce issue and stop collection.</string>
     <string name="pref_send_sigquit_title">Debug: Stop with SIGQUIT</string>
     <string name="pref_send_sigquit_summary">Stops all rclone processes with kill -SIGQUIT. Requires logging enabled.</string>
+ <string name="theme_follow_system">Follow System Theme</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -93,6 +94,18 @@ public class ActivityHelper {
         int customPrimaryColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_primary), -1);
         int customAccentColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_accent), -1);
         Boolean isDarkTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_key_dark_theme), false);
+
+        if(PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.pref_key_theme_follow_system), false)){
+            switch (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    isDarkTheme = true;
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                    isDarkTheme = false;
+                    break;
+            }
+        }
         context.getTheme().applyStyle(CustomColorHelper.getPrimaryColorTheme(context, customPrimaryColor), true);
         context.getTheme().applyStyle(CustomColorHelper.getAccentColorTheme(context, customAccentColor), true);
         if (isDarkTheme) {

@@ -91,6 +91,34 @@
             android:background="?attr/dividerColor"/>
 
         <RelativeLayout
+            android:id="@+id/dark_theme_follow_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?selectableItemBackground" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="?attr/textColorPrimary"
+                android:textStyle="bold"
+                android:text="@string/theme_follow_system"/>
+
+            <Switch
+                android:id="@+id/follow_system_theme_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/dark_theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,6 +131,7 @@
             android:background="?selectableItemBackground" >
 
             <TextView
+                android:id="@+id/dark_theme_switch_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

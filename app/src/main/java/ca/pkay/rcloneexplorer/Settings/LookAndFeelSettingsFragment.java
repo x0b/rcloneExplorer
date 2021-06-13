@@ -2,17 +2,21 @@ package ca.pkay.rcloneexplorer.Settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import ca.pkay.rcloneexplorer.Dialogs.ColorPickerDialog;
 import ca.pkay.rcloneexplorer.R;
@@ -26,6 +30,8 @@ public class LookAndFeelSettingsFragment extends Fragment {
     private View accentColorElement;
     private ImageView accentColorPreview;
     private Switch darkThemeSwitch;
+    private TextView darkThemeSwitchLabel;
+    private Switch followSystemThemeSwitch;
     private View darkThemeElement;
     private Switch wrapFilenamesSwitch;
     private View wrapFilenamesElement;
@@ -87,6 +93,8 @@ public class LookAndFeelSettingsFragment extends Fragment {
         accentColorElement = view.findViewById(R.id.accent_color);
         accentColorPreview = view.findViewById(R.id.accent_color_preview);
         darkThemeSwitch = view.findViewById(R.id.dark_theme_switch);
+        darkThemeSwitchLabel = view.findViewById(R.id.dark_theme_switch_label);
+        followSystemThemeSwitch = view.findViewById(R.id.follow_system_theme_switch);
         darkThemeElement = view.findViewById(R.id.dark_theme);
         wrapFilenamesSwitch = view.findViewById(R.id.wrap_filenames_switch);
         wrapFilenamesElement = view.findViewById(R.id.wrap_filenames);
@@ -95,10 +103,13 @@ public class LookAndFeelSettingsFragment extends Fragment {
     private void setDefaultStates() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isDarkTheme = sharedPreferences.getBoolean(getString(R.string.pref_key_dark_theme), false);
+        boolean themeFollowSystem = sharedPreferences.getBoolean(getString(R.string.pref_key_theme_follow_system), true);
         boolean isWrapFilenames = sharedPreferences.getBoolean(getString(R.string.pref_key_wrap_filenames), true);
 
         darkThemeSwitch.setChecked(isDarkTheme);
+        followSystemThemeSwitch.setChecked(themeFollowSystem);
         wrapFilenamesSwitch.setChecked(isWrapFilenames);
+        setDarkThemeSwitchState();
     }
 
     private void setClickListeners() {
@@ -106,6 +117,7 @@ public class LookAndFeelSettingsFragment extends Fragment {
         accentColorElement.setOnClickListener(v -> showAccentColorPicker());
         darkThemeElement.setOnClickListener(v -> darkThemeSwitch.setChecked(!darkThemeSwitch.isChecked()));
         darkThemeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onDarkThemeClicked(isChecked));
+        followSystemThemeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onFollowSystemClicked(isChecked));
         wrapFilenamesElement.setOnClickListener(v -> wrapFilenamesSwitch.setChecked(!wrapFilenamesSwitch.isChecked()));
         wrapFilenamesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onWrapFilenamesClicked(isChecked));
     }
@@ -169,10 +181,33 @@ public class LookAndFeelSettingsFragment extends Fragment {
         listener.onThemeChanged();
     }
 
+    private void onFollowSystemClicked(boolean isChecked) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(getString(R.string.pref_key_theme_follow_system), isChecked);
+        editor.apply();
+        setDarkThemeSwitchState();
+
+        listener.onThemeChanged();
+    }
+
     private void onWrapFilenamesClicked(boolean isChecked) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(getString(R.string.pref_key_wrap_filenames), isChecked);
         editor.apply();
+    }
+
+    private void setDarkThemeSwitchState(){
+        darkThemeSwitch.setEnabled(!followSystemThemeSwitch.isChecked());
+        darkThemeElement.setEnabled(!followSystemThemeSwitch.isChecked());
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        if(followSystemThemeSwitch.isChecked()){
+            theme.resolveAttribute(R.attr.textColorSecondary, typedValue, true);
+        }else{
+            theme.resolveAttribute(R.attr.textColorPrimary, typedValue, true);
+        }
+        darkThemeSwitchLabel.setTextColor(typedValue.data);
     }
 }
