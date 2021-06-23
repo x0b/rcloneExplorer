@@ -18,12 +18,27 @@ Use your cloud storage like a local folder. | Keep your files private on any clo
 - **Material Design** (Dark theme, custom primary and accent colors)
 - **All architectures** (runs on ARM, ARM64, x86 and x64 devices, Android 7+)
 - **Storage Access Framework (SAF)** ([see docs](https://x0b.github.io/docs/#adding-local-storage-saf)) for SD card and USB device access.
+- **Intentservice** to start tasks via third party apps!
 
 Screenshots
 -----------
 Manage Storage|Upload Files|Explore Files|Manage Files
 :-----:|:--------------:|:-----------:|:---------:|
 ![screenshot1](https://github.com/x0b/rcx/blob/master/docs/screenshot_1.png?raw=true)|![screenshot3](https://github.com/x0b/rcx/blob/master/docs/screenshot_3.png?raw=true)|![screenshot7](https://github.com/x0b/rcx/blob/master/docs/screenshot_7.png?raw=true)|![screenshot8](https://github.com/x0b/rcx/blob/master/docs/screenshot_8.png?raw=true)
+
+
+Intentservice
+-------------
+This app includes the ability to launch an intent! Create a task to sync to a remote, and copy it's id (via the treedot-menu)
+The intent needs the following:
+
+| Intent        | Content       |         |
+| :------------- | :-------------: | -------------: |
+| packageName      | ca.pkay.rcloneexplorer | |
+| className      | ca.pkay.rcloneexplorer.Services.TaskStartService | |
+| Action    | START_TASK | |
+| Integer Extra    | task | idOfTask |
+| Boolean Extra    | notification | true or false |
 
 Installation
 ------------
@@ -41,6 +56,24 @@ If you don't know which version to pick use ```rcx-<version>-universal-release.a
 Usage
 ------------
 [See the documentation](https://x0b.github.io/docs/).
+
+Developing
+------------
+[See the developer-documentation](https://x0b.github.io/dev/).
+
+Build rclone manually run:
+
+```
+./gradlew rclone:buildNative
+```
+
+When building rclone with a go version that is too old (eg 1.15.5), this error may show up:
+
+```
+ld.lld: error: duplicate symbol: x_cgo_inittls
+```
+
+It can be fixed by using a more recent version of go.
 
 Known Issues
 ------------

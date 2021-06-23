@@ -95,6 +95,7 @@ public class ActivityHelper {
         Boolean isDarkTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_key_dark_theme), false);
         context.getTheme().applyStyle(CustomColorHelper.getPrimaryColorTheme(context, customPrimaryColor), true);
         context.getTheme().applyStyle(CustomColorHelper.getAccentColorTheme(context, customAccentColor), true);
+        FLog.e(TAG,"i"+isDarkTheme);
         if (isDarkTheme) {
             context.getTheme().applyStyle(R.style.DarkTheme, true);
         } else {

@@ -11,6 +11,18 @@
             android:id="@+id/nav_remotes"
             android:icon="@drawable/ic_cloud"
             android:title="@string/remotes" />
+        <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/ic_notification_sync"
+            android:title="@string/tasks" />
+        <item
+            android:id="@+id/nav_trigger"
+            android:icon="@drawable/ic_baseline_av_timer_24"
+            android:title="@string/trigger" />
+        <item
+            android:id="@+id/nav_logs"
+            android:icon="@drawable/ic_baseline_format_list_bulleted_24"
+            android:title="@string/logFragment" />
     </group>
 
     <item
