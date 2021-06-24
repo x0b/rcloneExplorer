@@ -59,7 +59,7 @@ def configureNdk() {
     if (androidNdkHome != null) {
         ndkBasePath = Paths.get(ndkBasePath)
     } else {
-        def androidHome = System.getenv('ANDROID_HOME')
+        def androidHome = System.getenv("ANDROID_HOME")
         if (androidHome == null) {
             throw new GradleException('ANDROID_HOME env var missing')
         }

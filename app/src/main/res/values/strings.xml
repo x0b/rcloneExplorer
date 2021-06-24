@@ -52,7 +52,7 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="github_app_url" translatable="false">https://github.com/x0b/rcx</string>
     <string name="github_issue_url" translatable="false">https://github.com/x0b/rcx/issues/new/choose</string>
-   <string name="github_author_url" translatable="false">https://github.com/kaczmarkiewiczp</string>
+    <string name="github_author_url" translatable="false">https://github.com/kaczmarkiewiczp</string>
     <string name="github_maintainer_url" translatable="false">https://github.com/x0b</string>
     <string name="about_check_updates">Check</string>
     <string name="replace_config_file_question">Replace current configuration file?</string>
@@ -505,6 +505,49 @@
     <string name="pref_key_accessible_storage_locations" translatable="false">accessible_storage_locations</string>
     <string name="no_app_found_for_this_link">No app found for this link</string>
     <string name="documentsui_missing">System component for files (com.android.documentsui) missing</string>
+
+    <string name="back">Back</string>
+    <string name="task_dialog_save">save</string>
+    <string name="task_dialog_title_textfield_hint">Name</string>
+
+    <string name="sync_direction_local_remote">Sync local to remote</string>
+    <string name="sync_direction_remote_local">Sync remote to local</string>
+    <string name="tasks">Tasks</string>
+    <string name="edit">Edit</string>
+    <string name="start_task">Start Task</string>
+    <string name="copy_taskid">Copy TaskID</string>
+    <string name="task_copied_id_to_clipboard">Copied ID to clipboard!</string>
+    <string name="action_tasks_export">Export Tasks</string>
+    <string name="action_tasks_import">Import Tasks</string>
+    <string name="importer_unknown_error">Unknown error importing task!</string>
+    <string name="importer_no_file_selected">No File was selected</string>
+    <string name="exporter_success">The file was successfully stored at:</string>
+    <string name="sync_direction_copy_local_remote">Copy local to remote</string>
+    <string name="sync_direction_copy_remote_local">Copy remote to local</string>
+    <string name="copy">Copy</string>
+    <string name="task_dialog_title_name">Name</string>
+    <string name="task_dialog_title_remote">Remote</string>
+    <string name="task_dialog_title_remote_path">remote path</string>
+    <string name="task_dialog_title_local_path">Local Path</string>
+    <string name="task_dialog_title_sync_direction">Sync Direction</string>
+    <string name="operation_success">Sync was successful</string>
+    <string name="notification_sync_failed">Sync operation failed</string>
+    <string name="pin_to_dektop">Pin to Home</string>
+    <string name="title_activity_task">TaskActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="task_edit_label_name">Name:</string>
+    <string name="task_edit_label_local">local:</string>
+    <string name="task_edit_label_remote">Remote:</string>
+    <string name="task_edit_label_direction">Direction:</string>
+    <string name="task_edit_hint_title">Title of Task</string>
+    <string name="task_edit_hint_local">Local Path</string>
+    <string name="task_edit_hint_remote">Remote Path</string>
     <string name="rcd_service_notification_running_in_background">Rclone is running in background</string>
     <string name="rcd_service_notification_no_active_jobs">No active jobs.</string>
     <string name="rcd_service_notification_btn_stop_all">Stop All</string>
@@ -518,4 +561,40 @@
     <string name="pref_bugreport_start_summary">Tap to start data collection, then try to reproduce issue and stop collection.</string>
     <string name="pref_send_sigquit_title">Debug: Stop with SIGQUIT</string>
     <string name="pref_send_sigquit_summary">Stops all rclone processes with kill -SIGQUIT. Requires logging enabled.</string>
+    <string name="trigger">Trigger</string>
+    <string name="title_activity_trigger">Trigger</string>
+    <string name="enabled">Enabled</string>
+    <string name="trigger_name">Trigger-Name</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="time">Time</string>
+    <string name="task_to_run">Task to run</string>
+    <string name="notification_triggerservice_description">This is a notification that allows the triggermechanism to start a Task</string>
+    <string name="notification_triggerservice_title">Triggerservice</string>
+    <string name="intent_channel_notification_description">Channel for intent notifications</string>
+    <string name="message_trigger_enabled">Enabled Trigger</string>
+    <string name="message_trigger_disabled">Disabled Trigger</string>
+    <string name="trigger_time_label">Time:</string>
+    <string name="weekday_shorthand_mon">MON</string>
+    <string name="weekday_shorthand_tue">TUE</string>
+    <string name="weekday_shorthand_wed">WED</string>
+    <string name="weekday_shorthand_thur">THUR</string>
+    <string name="weekday_shorthand_fri">FRI</string>
+    <string name="weekday_shorthand_sat">SAT</string>
+    <string name="weekday_shorthand_sun">SUN</string>
+    <string name="trigger_task_label">Task:</string>
+    <string name="trigger_save_notasks">There are no tasks!</string>
+    <string name="taskactivity_task_not_found">This task was not found</string>
+    <string name="triggeractivity_trigger_not_found">Trigger not found!</string>
+    <string name="task_item_label_from">From:</string>
+    <string name="task_item_label_to">To:</string>
+    <string name="no_tasks_warning">There are no tasks. Please define a task first!</string>
+    <string name="no_trigger_warning">There are no triggers. Please define a trigger first!</string>
+    <string name="add_trigger">Add Trigger</string>
+    <string name="add_task">Add Task</string>
 </resources>

@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -31,26 +30,32 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+
+import ca.pkay.rcloneexplorer.Database.json.Importer;
+import ca.pkay.rcloneexplorer.Database.json.SharedPreferencesBackup;
 import ca.pkay.rcloneexplorer.Dialogs.Dialogs;
 import ca.pkay.rcloneexplorer.Dialogs.InputDialog;
 import ca.pkay.rcloneexplorer.Dialogs.LoadingDialog;
 import ca.pkay.rcloneexplorer.Fragments.FileExplorerFragment;
 import ca.pkay.rcloneexplorer.Fragments.RemotesFragment;
+import ca.pkay.rcloneexplorer.Fragments.TasksFragment;
+import ca.pkay.rcloneexplorer.Fragments.TriggerFragment;
 import ca.pkay.rcloneexplorer.Items.RemoteItem;
 import ca.pkay.rcloneexplorer.RemoteConfig.RemoteConfigHelper;
 import ca.pkay.rcloneexplorer.Services.StreamingService;
+import ca.pkay.rcloneexplorer.Services.TriggerService;
 import ca.pkay.rcloneexplorer.Settings.SettingsActivity;
 import ca.pkay.rcloneexplorer.util.CrashLogger;
 import ca.pkay.rcloneexplorer.util.FLog;
 import com.google.android.material.navigation.NavigationView;
+
+import ca.pkay.rcloneexplorer.util.ThemeHelper;
 import es.dmoral.toasty.Toasty;
 import io.github.x0b.rfc3339parser.Rfc3339Parser;
 import io.github.x0b.rfc3339parser.Rfc3339Strict;
@@ -69,8 +74,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -144,7 +151,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(new Intent(this, OnboardingActivity.class), ONBOARDING_REQUEST);
         }
 
-        applyTheme();
+        ThemeHelper.applyTheme(this);
         context = this;
         drawerPinnedRemoteIds = new HashMap<>();
         availableDrawerPinnedRemoteId = 2;
@@ -214,6 +221,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             startRemotesFragment();
         }
+        TriggerService triggerService = new TriggerService(context);
+        triggerService.queueTrigger();
     }
 
     @Override
@@ -231,15 +240,6 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         pinRemotesToDrawer();
-    }
-
-    private void applyTheme() {
-        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_key_dark_theme), false);
-        ActivityHelper.applyTheme(this);
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-        getWindow().setStatusBarColor(typedValue.data);
     }
 
     @Override
@@ -324,16 +324,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        boolean superOnBackPressed = true;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (fragment != null && fragment instanceof FileExplorerFragment) {
-            if (((FileExplorerFragment) fragment).onBackButtonPressed()) {
-                return;
-            } else {
-                fragment = null;
+        } else if (fragment != null) {
+            if(fragment instanceof FileExplorerFragment){
+                if (((FileExplorerFragment) fragment).onBackButtonPressed()) {
+                    return;
+                } else {
+                    fragment = null;
+                }
+            } else if(fragment instanceof TasksFragment){
+                startRemotesFragment();
+                superOnBackPressed=false;
+            } else if(fragment instanceof TriggerFragment){
+                startRemotesFragment();
+                superOnBackPressed=false;
             }
         }
-        super.onBackPressed();
+        if(superOnBackPressed){
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -367,6 +378,12 @@ public class MainActivity extends AppCompatActivity
                     Toasty.info(this,  getString(R.string.no_config_found), Toast.LENGTH_SHORT, true).show();
                 }
                 break;
+            case R.id.nav_tasks:
+                startTasksFragment();
+                break;
+            case R.id.nav_trigger:
+                startTriggerFragment();
+                break;
             case R.id.nav_settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 tryStartActivityForResult(this, settingsIntent, SETTINGS_CODE);
@@ -380,6 +397,28 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    private void startTasksFragment(){
+        startFragment(TasksFragment.newInstance());
+    }
+
+    private void startTriggerFragment() {
+        startFragment(TriggerFragment.newInstance());
+    }
+
+    private void startFragment(Fragment fragmentToStart) {
+        fragment = fragmentToStart;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+            fragmentManager.popBackStack();
+        }
+
+        if (!isFinishing()) {
+            fragmentManager.beginTransaction().replace(R.id.flFragment, fragment).commitAllowingStateLoss();
+        }
     }
 
     private void pinRemotesToDrawer() {
@@ -437,7 +476,7 @@ public class MainActivity extends AppCompatActivity
 
     private void warnUserAboutOverwritingConfiguration() {
         AlertDialog.Builder builder;
-        if (isDarkTheme) {
+        if (ThemeHelper.isDarkTheme(this)) {
             builder = new AlertDialog.Builder(this, R.style.DarkDialogTheme);
         } else {
             builder = new AlertDialog.Builder(this);
@@ -500,7 +539,7 @@ public class MainActivity extends AppCompatActivity
     public void importConfigFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
+        intent.setType("application/zip");
 
         tryStartActivityForResult(this, intent, READ_REQUEST_CODE);
     }
@@ -509,7 +548,10 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/*");
-        intent.putExtra(Intent.EXTRA_TITLE, "rclone.conf");
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String localTime = date.format(Calendar.getInstance().getTime());
+
+        intent.putExtra(Intent.EXTRA_TITLE, "rcx-backup-"+localTime+".zip");
         tryStartActivityForResult(this, intent, WRITE_REQUEST_CODE);
     }
 
@@ -718,8 +760,12 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Boolean doInBackground(Uri... uris) {
             try {
+                String json = rclone.readDatabaseJson(uris[0]);
+                Importer.importJson(json, context);
+                json = rclone.readSharedPrefs(uris[0]);
+                SharedPreferencesBackup.importJson(json, context);
                 return rclone.copyConfigFile(uris[0]);
-            } catch (IOException e) {
+            } catch (IOException | JSONException e) {
                 return false;
             }
         }

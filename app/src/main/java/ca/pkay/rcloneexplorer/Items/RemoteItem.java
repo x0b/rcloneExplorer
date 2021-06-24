@@ -9,7 +9,6 @@ import androidx.preference.PreferenceManager;
 import ca.pkay.rcloneexplorer.R;
 import io.github.x0b.safdav.file.SafConstants;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -77,6 +76,12 @@ public class RemoteItem implements Comparable<RemoteItem>, Parcelable {
         this.name = name;
         this.typeReadable = type;
         this.type = getTypeFromString(type);
+    }
+
+    public RemoteItem(String name, int type, String typeReadable) {
+        this.name = name;
+        this.typeReadable = typeReadable;
+        this.type = type;
     }
 
     private RemoteItem(Parcel in) {
@@ -348,6 +353,10 @@ public class RemoteItem implements Comparable<RemoteItem>, Parcelable {
     }
 
     public int getRemoteIcon() {
+        return getRemoteIcon(type);
+    }
+
+    public int getRemoteIcon(int type) {
         if (isCrypt()) {
             return R.drawable.ic_lock_black;
         } else {

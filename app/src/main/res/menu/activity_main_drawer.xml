@@ -11,6 +11,14 @@
             android:id="@+id/nav_remotes"
             android:icon="@drawable/ic_cloud"
             android:title="@string/remotes" />
+        <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/ic_baseline_swap_vert_24"
+            android:title="@string/tasks" />
+        <item
+            android:id="@+id/nav_trigger"
+            android:icon="@drawable/ic_baseline_av_timer_24"
+            android:title="@string/trigger" />
     </group>
 
     <item

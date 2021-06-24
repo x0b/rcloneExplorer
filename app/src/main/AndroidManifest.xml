@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
             android:allowBackup="true"
@@ -62,6 +63,12 @@
         <service android:name=".Services.MoveService" />
         <service android:name=".Services.SyncService" />
         <service
+                android:name=".Services.TaskStartService"
+                android:exported="true"/>
+        <service
+                android:name=".Services.TriggerService"
+                android:exported="true"/>
+        <service
                 android:name=".Services.RcdService"
                 android:foregroundServiceType="dataSync"/>
         <service
@@ -76,6 +83,14 @@
         <receiver android:name=".BroadcastReceivers.SyncCancelAction" />
         <receiver android:name=".Services.RcdService$RcdServiceAction"/>
         <receiver android:name=".Services.ReportService$StopCollectionReceiver" />
+        <receiver android:name=".BroadcastReceivers.BootReciever">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".BroadcastReceivers.TriggerReciever"
+            android:exported="true"/>
 
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
 
@@ -159,6 +174,14 @@
         <activity
             android:name=".RemoteConfig.RemoteConfig"
             android:label="@string/title_activity_remote_config"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TaskActivity"
+            android:label="@string/title_activity_task"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TriggerActivity"
+            android:label="@string/title_activity_trigger"
             android:theme="@style/AppTheme.NoActionBar" />
 
     </application>

@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import ca.pkay.rcloneexplorer.util.FLog;
@@ -90,8 +93,8 @@ public class ActivityHelper {
 
     public static void applyTheme(Activity context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int customPrimaryColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_primary), -1);
-        int customAccentColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_accent), -1);
+        int customPrimaryColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_primary), R.color.colorPrimary);
+        int customAccentColor = sharedPreferences.getInt(context.getString(R.string.pref_key_color_accent), R.color.colorAccent);
         Boolean isDarkTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_key_dark_theme), false);
         context.getTheme().applyStyle(CustomColorHelper.getPrimaryColorTheme(context, customPrimaryColor), true);
         context.getTheme().applyStyle(CustomColorHelper.getAccentColorTheme(context, customAccentColor), true);
@@ -101,16 +104,22 @@ public class ActivityHelper {
             context.getTheme().applyStyle(R.style.LightTheme, true);
         }
 
-        // set recents app color to the primary color
-        ActivityManager.TaskDescription taskDesc;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            taskDesc = new ActivityManager.TaskDescription(
-                    context.getString(R.string.app_name), R.mipmap.ic_launcher_round, customPrimaryColor);
-        } else {
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
-            //noinspection deprecation
-            taskDesc = new ActivityManager.TaskDescription(context.getString(R.string.app_name), bm, customPrimaryColor);
+        //TODO: remove when support for pre marshmallow devices is dropped.
+        //      Also this will cause a regression, since now older devices wont fully apply the theme.
+        //      I am not sure why this ever worked, since customPrimaryColor was always an identifier, not a color.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            int color = context.getColor(customPrimaryColor);
+            // set recents app color to the primary color
+            ActivityManager.TaskDescription taskDesc;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                taskDesc = new ActivityManager.TaskDescription(
+                        context.getString(R.string.app_name), R.mipmap.ic_launcher_round, color);
+            } else {
+                Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
+                //noinspection deprecation
+                taskDesc = new ActivityManager.TaskDescription(context.getString(R.string.app_name), bm, color);
+            }
+            context.setTaskDescription(taskDesc);
         }
-        context.setTaskDescription(taskDesc);
     }
 }
